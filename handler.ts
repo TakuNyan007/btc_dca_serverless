@@ -1,25 +1,43 @@
 import { ScheduledHandler } from 'aws-lambda';
 import 'source-map-support/register';
-import { OrderBooksResponse } from './src/@types/gmocoin';
-import { GmoCoin } from './src/exchange/gmocoin';
+import * as ccxt from 'ccxt';
 
-const apiKey = 'InputYourApiKey';
-const apiSecret = 'InputYourApiSecret';
+const API_KEY = 'Input your API key';
+const API_SECRET = 'Input your API secret';
+const JPY_SIZE = 2740;
 
 export const buyBitCoin: ScheduledHandler = async () => {
-  const jpySize = 2740;
-  const gmoCoin = new GmoCoin(apiKey, apiSecret);
-  const orderbooks: OrderBooksResponse = await gmoCoin.fetchOrderBook('BTC');
-  const lastAsk = Number(orderbooks.asks[0].price);
-  const btcSize = Math.ceil((jpySize / lastAsk) * 10000) / 10000; //* 多めに買いたいので切り上げ
-  const orderId: string = await gmoCoin.marketOrder({
-    symbol: 'BTC',
-    side: 'BUY',
-    size: btcSize,
+  const bitbank = new ccxt.bitbank({
+    apiKey: API_KEY,
+    secret: API_SECRET,
   });
+  const orderbook: ccxt.OrderBook = await bitbank.fetchOrderBook('BTC/JPY');
+  const lastAsk: number = orderbook.asks[0][0];
+  const btcSize = Math.ceil((JPY_SIZE / lastAsk) * 10000) / 10000; //* 多めに買いたいので切り上げ
+  const order: ccxt.Order = await bitbank.createMarketOrder(
+    'BTC/JPY',
+    'buy',
+    btcSize,
+    1
+  );
+  await new Promise((resolve) => setTimeout(resolve, 1000)); // order後すぐだと最新の取引が反映されていないので1秒待つことにした
+  const sinceTimestamp = Date.now() - 86400000; //* とりあえず1日前からの取引履歴を取得
+  const trades: ccxt.Trade[] = await bitbank.fetchMyTrades(
+    'BTC/JPY',
+    sinceTimestamp,
+    1000
+  );
+  const tradesOfOrderId = trades.filter((trade) => {
+    return trade.order === order.id;
+  });
+  const buyResult = { cost: 0, amount: 0, fee: 0 };
+  tradesOfOrderId.forEach((trade) => {
+    buyResult.cost += trade.cost;
+    buyResult.amount += trade.amount;
+    buyResult.fee += Number(trade.info['fee_amount_quote']);
+  });
+
   console.log(
-    `[orderId: ${orderId}] ${btcSize} BTC was bought at ${lastAsk} yen (About ${
-      lastAsk * btcSize
-    } yen)`
+    `[orderId: ${order.id}] ${buyResult.amount} BTC was bought for about ${buyResult.cost} yen. Trading fee was ${buyResult.fee}`
   );
 };
