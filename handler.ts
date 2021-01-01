@@ -1,9 +1,11 @@
 import { ScheduledHandler } from 'aws-lambda';
 import 'source-map-support/register';
 import * as ccxt from 'ccxt';
+import { Line } from './src/nortify/line';
 
 const API_KEY = 'Input your API key';
 const API_SECRET = 'Input your API secret';
+const LINE_TOKEN = 'Input your line token';
 const JPY_SIZE = 2740;
 
 export const buyBitCoin: ScheduledHandler = async () => {
@@ -40,4 +42,18 @@ export const buyBitCoin: ScheduledHandler = async () => {
   console.log(
     `[orderId: ${order.id}] ${buyResult.amount} BTC was bought for about ${buyResult.cost} yen. Trading fee was ${buyResult.fee}`
   );
+
+  const line = new Line(LINE_TOKEN);
+  const message = `
+  bitbankでBTCを購入しました！
+
+  【注文ID】
+    ${order.id}
+  【BTC枚数】
+    ${buyResult.amount}
+  【使った日本円】
+    ${buyResult.cost} 円
+  【手数料】
+    ${buyResult.fee} 円`;
+  line.notify(message);
 };
