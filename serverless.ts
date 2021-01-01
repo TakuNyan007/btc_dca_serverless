@@ -15,21 +15,18 @@ const serverlessConfiguration: AWS = {
     name: 'aws',
     runtime: 'nodejs12.x',
     region: 'ap-northeast-1',
-    apiGateway: {
-      minimumCompressionSize: 1024,
-    },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
     },
   },
   functions: {
-    hello: {
-      handler: 'handler.hello',
+    buyBitCoin: {
+      handler: 'handler.buyBitCoin',
       events: [
         {
-          http: {
-            method: 'get',
-            path: 'hello',
+          schedule: {
+            name: 'BuyBitCoinScheduledEvent',
+            rate: 'cron(0 4 * * ? *)',
           },
         },
       ],

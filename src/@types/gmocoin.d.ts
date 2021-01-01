@@ -1,8 +1,9 @@
-export interface GmoCoinApiResponse {
+export type GmoCoinApiResponse = {
   status: Statuscode;
-  data: string;
+  data?: string | { [key: string]: unknown };
+  messages: Array<{ message_code: string; message_string: string }>;
   responsetime: Date;
-}
+};
 
 export interface Asset {
   amount: string;
@@ -29,6 +30,20 @@ export type MarketOrderParams = {
 };
 
 export type OrderResponse = string;
+
+export type OrderBooksParams = {
+  symbol: GmoCoinSymbol;
+};
+
+export type OrderBooksResponse = {
+  asks: Array<OrderBook>;
+  bids: Array<OrderBook>;
+};
+
+export type OrderBook = {
+  price: number;
+  size: number;
+};
 
 export interface PrivateRequestHeader {
   'API-KEY': string;
