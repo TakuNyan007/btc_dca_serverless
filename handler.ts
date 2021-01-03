@@ -45,15 +45,16 @@ export const buyBitCoin: ScheduledHandler = async () => {
 
   const line = new Line(LINE_TOKEN);
   const message = `
-  bitbankでBTCを購入しました！
+bitbankでBTCを購入しました！
 
-  【注文ID】
+【注文ID】
     ${order.id}
-  【BTC枚数】
+【BTC枚数】
     ${buyResult.amount}
-  【使った日本円】
+【使った日本円】
     ${buyResult.cost} 円
-  【手数料】
+【手数料】
     ${buyResult.fee} 円`;
+
   line.notify(message);
 };
