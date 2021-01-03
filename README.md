@@ -3,7 +3,7 @@
 ※README.md は現在編集中です。  
 
 ## 本プロジェクトの目的
-BTCをドルコスト平均法で毎日買うBOTをAWS Lambdaで動かすという題材で
+「ビットコイン(BTC)をドルコスト平均法で毎日買うBOTをAWS Lambdaで動かす」という題材で
  - TypeScript
  - AWS Lambda
  - serverless frameworkの使い方
