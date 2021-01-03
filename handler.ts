@@ -3,19 +3,15 @@ import 'source-map-support/register';
 import * as ccxt from 'ccxt';
 import { Line } from './src/nortify/line';
 
-const API_KEY = 'Input your API key';
-const API_SECRET = 'Input your API secret';
-const LINE_TOKEN = 'Input your line token';
-const JPY_SIZE = 2740;
-
 export const buyBitCoin: ScheduledHandler = async () => {
   const bitbank = new ccxt.bitbank({
-    apiKey: API_KEY,
-    secret: API_SECRET,
+    apiKey: process.env.BITBANK_API_KEY,
+    secret: process.env.BITBANK_API_SECRET,
   });
   const orderbook: ccxt.OrderBook = await bitbank.fetchOrderBook('BTC/JPY');
   const lastAsk: number = orderbook.asks[0][0];
-  const btcSize = Math.ceil((JPY_SIZE / lastAsk) * 10000) / 10000; //* 多めに買いたいので切り上げ
+  const btcSize =
+    Math.ceil((Number(process.env.JPY_PER_DAY) / lastAsk) * 10000) / 10000; //* 多めに買いたいので切り上げ
   const order: ccxt.Order = await bitbank.createMarketOrder(
     'BTC/JPY',
     'buy',
@@ -43,7 +39,7 @@ export const buyBitCoin: ScheduledHandler = async () => {
     `[orderId: ${order.id}] ${buyResult.amount} BTC was bought for about ${buyResult.cost} yen. Trading fee was ${buyResult.fee}`
   );
 
-  const line = new Line(LINE_TOKEN);
+  const line = new Line(process.env.LINE_TOKEN);
   const message = `
 bitbankでBTCを購入しました！
 

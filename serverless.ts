@@ -17,6 +17,10 @@ const serverlessConfiguration: AWS = {
     region: 'ap-northeast-1',
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      BITBANK_API_KEY: 'Please input yours',
+      BITBANK_API_SECRET: 'Please input yours',
+      LINE_TOKEN: 'Please input yours',
+      JPY_PER_DAY: '3000', //毎日, JPY_PER_DAY円でBTC購入する（最小単位の関係で10%ほど多く購入される場合あり）
     },
   },
   functions: {
