@@ -1,58 +1,25 @@
 # AWS Lambda×TypeScript の BTC ドルコスト平均法積み立て BOT
 
-※README.md は現在編集中です。
+※README.md は現在編集中です。  
 
-## 環境構築の流れ
+## 本プロジェクトの目的
+BTCをドルコスト平均法で毎日買うBOTをAWS Lambdaで動かすという題材で
+ - TypeScript
+ - AWS Lambda
+ - serverless frameworkの使い方
 
-### Hello Serverless!手順
+をキャッチアップしていきます。  
+(作成の過程を記事にまとめたいのですが、現在編集中です)
 
-1. serverless のインストール
+## 完成したもの
+ - AWS Lambdaを定期実行し、毎日1回Lambdaの環境変数で指定した日本円分のBTCを買うBOT（※利用取引所：bitbank）
+ - 毎日の取引後、LINE通知してくれる
 
-```
-npm i -g serverless
-```
-
-2. serverless template の作成
-
-```
-sls create -t aws-nodejs-typescript -p btc_dca_serverless
-```
-
-3. パッケージをインストール
-
-```
-npm i
-```
-
-4. serverless の型定義ファイルをインストール
-
-```
-npm i -D @types/node @types/serverless
-```
-
-5. 試しにデプロイ
-
-```
-sls deploy
-```
-
-6. ログに表示された endpoints にアクセスして動作確認
-
-7. デプロイした奴を削除
-
-```
-sls remove
-```
-
-8. 実装開始！
-
-### 混乱したこと
-
-serverless.yml が生成されると思ったら serverless.ts でびっくり  
-でも、yml よりこっちの方がわかりやすいかも？
+## 環境構築～実装開始までの流れ
+Qiita記事に移管しました。  
+[VSCodeでServerless Framework(AWS×TypeScript)をデバッグするまでの手順](https://qiita.com/oretakuan/items/c792f40f83fe74d73786)
 
 ## 取引所の選定
-
 BTC 積み立てを行う取引所を選びます。候補は僕が登録済み、かつ、API を提供しているこの 4 つです。
 
 - bitbank
